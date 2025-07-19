@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>👀 راحة العين المتقدم - تنبيه ذكي لحماية نظرك</title>
+    <meta
+      name="description"
+      content="تطبيق متكامل لتذكيرك بأخذ فترات راحة لعينيك مع تمارين مفيدة" />
+
+    <link rel="stylesheet" href="assits/all.min.css" />
+    <style>
+      :root {
+        --primary-color: #2e6c7d;
+        --primary-dark: #1b4a5e;
+        --secondary-color: #125986;
+        --bg-light: #f5f5f5;
+        --bg-dark: #1e1e1e;
+        --text-light: #333;
+        --text-dark: #f0f0f0;
+        --card-bg: #ffffff;
+        --border-color: #e0e0e0;
+        --success-color: #2e7d32;
+        --danger-color: #d32f2f;
+      }
+      @font-face {
+        font-family: 'Cairo';
+        src: url('assits/Cairo-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      /* استخدام الخط */
+      body {
+        font-family: 'Cairo', sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: 'Cairo', sans-serif;
+      }
+
+      body {
+        background: var(--bg-light);
+        color: var(--text-light);
+        padding: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .dark-mode {
+        background: var(--bg-dark);
+        color: var(--text-dark);
+        --card-bg: #2d2d2d;
+        --border-color: #444;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        color: var(--primary-color);
+        margin: 0;
+        font-size: 1.8rem;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
+        position: relative;
+      }
+
+      .card-title {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        position: relative;
+      }
+
+      .form-group .hint {
+        font-size: 0.8rem;
+        color: var(--primary-color);
+        margin-top: 5px;
+        display: block;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      input,
+      select,
+      button {
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        width: 100%;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(46, 108, 125, 0.2);
+      }
+
+      button {
+        background: var(--primary-color);
+        color: white;
+        cursor: pointer;
+        border: none;
+        font-weight: bold;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+
+      button:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+      }
+
+      button.secondary {
+        background: var(--secondary-color);
+      }
+
+      button.secondary:hover {
+        background: #0d4b6e;
+      }
+
+      button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      #timer {
+        font-size: 3rem;
+        text-align: center;
+        margin: 20px 0;
+        font-weight: bold;
+        color: var(--primary-color);
+        font-family: monospace;
+      }
+
+      #breakAlert {
+        display: none;
+        background: rgba(200, 230, 201, 0.3);
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px dashed var(--primary-color);
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .dark-mode #breakAlert {
+        background: rgba(46, 125, 50, 0.2);
+      }
+
+      .exercise-container {
+        margin-top: 20px;
+      }
+
+      .exercise {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .dark-mode .exercise {
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .stat-item {
+        background: rgba(200, 230, 201, 0.3);
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        border-bottom: 3px solid var(--primary-color);
+      }
+
+      .dark-mode .stat-item {
+        background: rgba(46, 125, 50, 0.2);
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .settings-icon {
+        cursor: pointer;
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        transition: transform 0.3s;
+      }
+
+      .settings-icon:hover {
+        transform: rotate(30deg);
+      }
+
+      .tab-container {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+        position: relative;
+      }
+
+      .tab:hover {
+        color: var(--primary-color);
+      }
+
+      .tab.active {
+        border-bottom: 3px solid var(--primary-color);
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* تأثيرات الأزرار */
+      button:active,
+      button.active {
+        transform: translateY(2px) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      button#startBtn.active {
+        background: var(--primary-dark);
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      button#stopBtn.active {
+        background: #0d4b6e;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      @media (max-width: 600px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        #timer {
+          font-size: 2rem;
+        }
+
+        .tab {
+          padding: 8px 12px;
+          font-size: 0.9rem;
+        }
+      }
+
+      /* تلميحات الأدوات */
+      [data-title] {
+        position: relative;
+        cursor: help;
+      }
+
+      [data-title]:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-dark);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        z-index: 100;
+        margin-bottom: 5px;
+      }
+
+      [data-title]:hover::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: var(--primary-dark) transparent transparent transparent;
+        margin-bottom: -5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1><i class="fas fa-eye"></i> راحة العين المتقدم</h1>
+        <i
+          class="fas fa-moon settings-icon"
+          id="darkModeToggle"
+          data-title="تبديل الوضع المظلم"></i>
+        <div id="refresh_tab" data-title=" تحديث البيانات">
+          <i class="fas fa-refresh"></i> تحديث البيانات
+        </div>
+      </header>
+
+      <div class="tab-container">
+        <div
+          class="tab active"
+          data-tab="timer"
+          data-title="مؤقت العمل والراحة">
+          <i class="fas fa-clock"></i> المؤقت
+        </div>
+        <div class="tab" data-tab="stats" data-title="إحصائيات استخدامك">
+          <i class="fas fa-chart-bar"></i> الإحصائيات
+        </div>
+        <div class="tab" data-tab="settings" data-title="تخصيص الإعدادات">
+          <i class="fas fa-cog"></i> الإعدادات
+        </div>
+        <div class="tab" data-tab="exercises" data-title="تمارين العين الصحية">
+          <i class="fas fa-eye"></i> التمارين
+        </div>
+      </div>
+
+      <div class="tab-content active" id="timer-tab">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-clock"></i> مؤقت العمل</div>
+
+          <div id="timer" data-title="الوقت المتبقي">--:--</div>
+
+          <div class="form-group">
+            <label for="workDuration">مدة العمل (دقائق):</label>
+            <input
+              type="number"
+              id="workDuration"
+              min="1"
+              value="60"
+              data-title="حدد مدة الجلسة الواحدة" />
+            <span class="hint">المدة الموصى بها: 20-90 دقيقة</span>
+          </div>
+
+          <div class="form-group">
+            <label for="breakDuration">مدة الراحة (دقائق):</label>
+            <input
+              type="number"
+              id="breakDuration"
+              min="1"
+              value="3"
+              data-title="حدد مدة استراحة العين" />
+            <span class="hint">المدة الموصى بها: 3-5 دقائق</span>
+          </div>
+
+          <button id="startBtn" data-title="بدء جلسة العمل">
+            <i class="fas fa-play"></i> بدء
+          </button>
+          <button
+            id="stopBtn"
+            class="secondary"
+            data-title="إيقاف المؤقت الحالي">
+            <i class="fas fa-stop"></i> إيقاف
+          </button>
+        </div>
+
+        <div id="breakAlert" data-title="تنبيه الراحة">
+          <h2><i class="fas fa-bell"></i> حان وقت الراحة!</h2>
+          <p>الوقت المتبقي: <span id="breakCountdown">03:00</span></p>
+          <div id="currentExercise"></div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="stats-tab">
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-chart-bar"></i> إحصائيات اليوم
+          </div>
+
+          <div class="stats">
+            <div class="stat-item" data-title="عدد جلسات العمل المكتملة">
+              <div class="stat-value" id="sessionsCount">0</div>
+              <div>جلسات عمل</div>
+            </div>
+            <div class="stat-item" data-title="إجمالي وقت العمل اليوم">
+              <div class="stat-value" id="totalWorkTime">00:00</div>
+              <div>إجمالي العمل</div>
+            </div>
+            <div class="stat-item" data-title="إجمالي وقت الراحة اليوم">
+              <div class="stat-value" id="totalBreakTime">00:00</div>
+              <div>إجمالي الراحة</div>
+            </div>
+            <div class="stat-item" data-title="متوسط وقت العمل المحدد من قبل">
+              <div class="stat-value" id="AvrdgeWorkTime">00:00</div>
+              <div>متوسط وقت العمل المحدد من قبل بالدقائق</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="settings-tab">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-cog"></i> الإعدادات</div>
+
+          <div class="form-group">
+            <label>
+              <input
+                type="checkbox"
+                id="enableSound"
+                data-title="تشغيل صوت التنبيه عند الراحة" />
+              تفعيل صوت التنبيه
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input
+                type="checkbox"
+                id="enableNotifications"
+                data-title="عرض إشعارات على الشاشة" />
+              تفعيل الإشعارات
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="exerciseType">نوع التمارين أثناء الراحة:</label>
+            <select id="exerciseType" data-title="اختر كيفية عرض تمارين العين">
+              <option value="random">عشوائي</option>
+              <option value="sequence">متسلسل</option>
+            </select>
+          </div>
+
+          <button
+            id="resetStatsBtn"
+            class="secondary"
+            data-title="إعادة تعيين جميع الإحصائيات">
+            <i class="fas fa-trash-alt"></i> إعادة تعيين الإحصائيات
+          </button>
+        </div>
+      </div>
+
+      <div class="tab-content" id="exercises-tab">
+        <div class="card">
+          <div class="card-title"><i class="fas fa-eye"></i> تمارين العين</div>
+
+          <div class="exercise-container">
+            <div class="exercise" data-title="تمرين 20-20-20 لحماية العين">
+              <h3><i class="fas fa-hand-point-up"></i> تمرين 20-20-20</h3>
+              <p>
+                كل 20 دقيقة، انظر إلى شيء على بعد 20 قدم (6 أمتار) لمدة 20 ثانية
+              </p>
+            </div>
+
+            <div class="exercise" data-title="تمرين التركيز البصري">
+              <h3><i class="fas fa-sync-alt"></i> التناوب البصري</h3>
+              <p>انظر إلى شيء قريب ثم شيء بعيد بالتناوب لمدة 10 مرات</p>
+            </div>
+
+            <div class="exercise" data-title="تمرين ترطيب العين">
+              <h3><i class="fas fa-clock"></i> الرمش المنتظم</h3>
+              <p>أغمض عينيك ببطء وافتحها، كرر ذلك 10 مرات</p>
+            </div>
+
+            <div class="exercise" data-title="تمرين تقوية عضلات العين">
+              <h3><i class="fas fa-arrows-alt-h"></i> حركة العين الجانبية</h3>
+              <p>حرك عينيك من اليمين إلى اليسار دون تحريك رأسك</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <audio
+        id="breakSound"
+        src="alert.mp3"
+        type="audio/mp3"
+        preload="auto"></audio>
+    </div>
+
+    <script src="assits/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // الحالة العامة للتطبيق - يتم تحميلها من localStorage إذا كانت موجودة
+        const defaultState = {
+          countdown: null,
+          timeLeft: 0,
+          inBreak: false,
+          workDuration: 60,
+          breakDuration: 3,
+          sessions: 0,
+          totalWorkTime: 0,
+          totalBreakTime: 0,
+          darkMode: localStorage.getItem('darkMode') === 'true',
+          enableSound: true,
+          enableNotifications: true,
+          exercises: [
+            {
+              title: 'تمرين 20-20-20',
+              description:
+                'انظر إلى شيء على بعد 20 قدم (6 أمتار) لمدة 20 ثانية',
+              icon: 'fas fa-hand-point-up',
+            },
+            {
+              title: 'التناوب البصري',
+              description:
+                'انظر إلى شيء قريب ثم شيء بعيد بالتناوب لمدة 10 مرات',
+              icon: 'fas fa-sync-alt',
+            },
+            {
+              title: 'الرمش المنتظم',
+              description: 'أغمض عينيك ببطء وافتحها، كرر ذلك 10 مرات',
+              icon: 'fas fa-clock',
+            },
+            {
+              title: 'حركة العين الجانبية',
+              description: 'حرك عينيك من اليمين إلى اليسار دون تحريك رأسك',
+              icon: 'fas fa-arrows-alt-h',
+            },
+          ],
+          currentExercise: 0,
+          exerciseType: 'random',
+        };
+
+        // تحميل الحالة من localStorage أو استخدام الحالة الافتراضية
+        const savedState = localStorage.getItem('eyeCareState');
+        const state = savedState ? JSON.parse(savedState) : defaultState;
+
+        // التأكد من أن جميع الخصائص موجودة
+        Object.keys(defaultState).forEach((key) => {
+          if (state[key] === undefined) {
+            state[key] = defaultState[key];
+          }
+        });
+
+        // تهيئة الوضع المظلم
+        if (state.darkMode) {
+          $('body').addClass('dark-mode');
+          $('#darkModeToggle').removeClass('fa-moon').addClass('fa-sun');
+        }
+
+        // عناصر واجهة المستخدم
+        const elements = {
+          timer: $('#timer'),
+          breakAlert: $('#breakAlert'),
+          breakCountdown: $('#breakCountdown'),
+          currentExercise: $('#currentExercise'),
+          workDuration: $('#workDuration'),
+          breakDuration: $('#breakDuration'),
+          sessionsCount: $('#sessionsCount'),
+          totalWorkTime: $('#totalWorkTime'),
+          totalBreakTime: $('#totalBreakTime'),
+          AvrdgeWorkTime: $('#AvrdgeWorkTime'),
+          enableSound: $('#enableSound'),
+          enableNotifications: $('#enableNotifications'),
+          exerciseType: $('#exerciseType'),
+          resetStatsBtn: $('#resetStatsBtn'),
+        };
+
+        // تحديث واجهة المستخدم بالحالة المحملة
+        function updateUIFromState() {
+          elements.workDuration.val(state.workDuration);
+          elements.breakDuration.val(state.breakDuration);
+          elements.enableSound.prop('checked', state.enableSound);
+          elements.enableNotifications.prop(
+            'checked',
+            state.enableNotifications
+          );
+          elements.exerciseType.val(state.exerciseType || 'random');
+
+          if (state.timeLeft > 0) {
+            if (state.inBreak) {
+              elements.breakAlert.show();
+              elements.breakCountdown.text(formatTime(state.timeLeft));
+              showExercise(state.currentExercise);
+              $('#startBtn').prop('disabled', true);
+              $('#stopBtn').prop('disabled', false).addClass('active');
+            } else {
+              elements.timer.text(formatTime(state.timeLeft));
+              $('#startBtn').addClass('active').prop('disabled', true);
+              $('#stopBtn').prop('disabled', false);
+            }
+          }
+
+          updateStatsDisplay();
+        }
+
+        // استدعاء الدالة لتهيئة الواجهة
+        updateUIFromState();
+
+        // الأحداث
+        $('#darkModeToggle').click(toggleDarkMode);
+        $('#startBtn').click(startTimer);
+        $('#stopBtn').click(stopTimer);
+        $('.tab').click(switchTab);
+        elements.resetStatsBtn.click(resetStatistics);
+
+        // ===== الدوال الأساسية =====
+
+        function toggleDarkMode() {
+          state.darkMode = !state.darkMode;
+          $('body').toggleClass('dark-mode');
+          localStorage.setItem('darkMode', state.darkMode);
+          $('#darkModeToggle').toggleClass('fa-moon fa-sun');
+          saveState();
+        }
+
+        function startTimer() {
+          if (state.countdown) return;
+
+          state.workDuration = parseInt(elements.workDuration.val()) || 60;
+          state.breakDuration = parseInt(elements.breakDuration.val()) || 3;
+
+          // تفعيل زر البدء وإلغاء تفعيل زر الإيقاف
+          $('#startBtn').addClass('active').prop('disabled', true);
+          $('#stopBtn').removeClass('active').prop('disabled', false);
+
+          saveState();
+          startWorkSession();
+        }
+
+        function stopTimer() {
+          clearInterval(state.countdown);
+          state.countdown = null;
+          elements.breakAlert.hide();
+          elements.timer.text('--:--');
+          state.timeLeft = 0;
+
+          // تفعيل زر الإيقاف وإلغاء تفعيل زر البدء
+          $('#stopBtn').addClass('active').prop('disabled', true);
+          $('#startBtn').removeClass('active').prop('disabled', false);
+
+          saveState();
+        }
+
+        function startWorkSession() {
+          state.inBreak = false;
+          state.timeLeft = state.workDuration * 60;
+          elements.breakAlert.hide();
+          updateTimerDisplay();
+
+          // إلغاء أي مؤقت سابق
+          if (state.countdown) {
+            clearInterval(state.countdown);
+          }
+
+          state.countdown = setInterval(() => {
+            state.timeLeft--;
+            state.totalWorkTime++;
+            updateTimerDisplay();
+            updateStatsDisplay();
+            saveState();
+
+            if (state.timeLeft <= 0) {
+              clearInterval(state.countdown);
+              state.sessions++;
+              startBreakSession();
+            }
+          }, 1000);
+        }
+
+        function startBreakSession() {
+          state.inBreak = true;
+          state.timeLeft = state.breakDuration * 60;
+          elements.breakAlert.fadeIn();
+          showRandomExercise();
+          updateBreakDisplay();
+
+          if (state.enableSound) {
+            playSound();
+          }
+
+          if (
+            state.enableNotifications &&
+            Notification.permission === 'granted'
+          ) {
+            showNotification('حان وقت الراحة!', 'خذ استراحة لعينيك الآن');
+          }
+
+          // إلغاء أي مؤقت سابق
+          if (state.countdown) {
+            clearInterval(state.countdown);
+          }
+
+          state.countdown = setInterval(() => {
+            state.timeLeft--;
+            state.totalBreakTime++;
+            updateBreakDisplay();
+            updateStatsDisplay();
+            saveState();
+
+            if (state.timeLeft <= 0) {
+              clearInterval(state.countdown);
+              elements.breakAlert.fadeOut();
+              startWorkSession();
+            }
+          }, 1000);
+        }
+
+        function showRandomExercise() {
+          if (elements.exerciseType.val() === 'sequence') {
+            state.currentExercise =
+              (state.currentExercise + 1) % state.exercises.length;
+          } else {
+            state.currentExercise = Math.floor(
+              Math.random() * state.exercises.length
+            );
+          }
+
+          showExercise(state.currentExercise);
+          saveState();
+        }
+
+        function showExercise(index) {
+          const exercise = state.exercises[index];
+          elements.currentExercise.html(`
+                  <div class="exercise">
+                    <h3><i class="${exercise.icon}"></i> ${exercise.title}</h3>
+                    <p>${exercise.description}</p>
+                  </div>
+                `);
+        }
+
+        function resetStatistics() {
+          if (
+            confirm('هل أنت متأكد من رغبتك في إعادة تعيين جميع الإحصائيات؟')
+          ) {
+            state.sessions = 0;
+            state.totalWorkTime = 0;
+            state.totalBreakTime = 0;
+            updateStatsDisplay();
+            saveState();
+            alert('تم إعادة تعيين الإحصائيات بنجاح');
+          }
+        }
+
+        // ===== دوال المساعدة =====
+
+        function formatTime(seconds) {
+          const m = Math.floor(seconds / 60)
+            .toString()
+            .padStart(2, '0');
+          const s = (seconds % 60).toString().padStart(2, '0');
+          return `${m}:${s}`;
+        }
+
+        function updateTimerDisplay() {
+          elements.timer.text(formatTime(state.timeLeft));
+        }
+
+        function updateBreakDisplay() {
+          elements.breakCountdown.text(formatTime(state.timeLeft));
+        }
+
+        function updateStatsDisplay() {
+          elements.sessionsCount.text(state.sessions);
+          elements.totalWorkTime.text(formatTime(state.totalWorkTime));
+          elements.totalBreakTime.text(formatTime(state.totalBreakTime));
+        }
+
+        function playSound() {
+          const audio = $('#breakSound')[0];
+          audio.currentTime = 0;
+          audio.play().catch((err) => {
+            console.warn('لم يتم تشغيل الصوت:', err);
+          });
+        }
+
+        function showNotification(title, body) {
+          if (!('Notification' in window)) return;
+
+          if (Notification.permission === 'granted') {
+            new Notification(title, { body });
+          } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then((permission) => {
+              if (permission === 'granted') {
+                new Notification(title, { body });
+              }
+            });
+          }
+        }
+
+        function switchTab() {
+          $('.tab').removeClass('active');
+          $(this).addClass('active');
+
+          $('.tab-content').removeClass('active');
+          $(`#${$(this).data('tab')}-tab`).addClass('active');
+        }
+
+        function saveState() {
+          // لا نحفظ المؤقت النشط لأنه لا يمكن تخزينه
+          const stateToSave = { ...state, countdown: null };
+          localStorage.setItem('eyeCareState', JSON.stringify(stateToSave));
+        }
+
+        // حفظ الإعدادات عند التغيير
+        elements.enableSound.change(() => {
+          state.enableSound = elements.enableSound.is(':checked');
+          saveState();
+        });
+
+        elements.enableNotifications.change(() => {
+          state.enableNotifications =
+            elements.enableNotifications.is(':checked');
+          saveState();
+        });
+
+        elements.exerciseType.change(() => {
+          state.exerciseType = elements.exerciseType.val();
+          saveState();
+        });
+
+        // طلب إذن الإشعارات عند الحاجة
+        if (state.enableNotifications) {
+          Notification.requestPermission();
+        }
+
+        // حفظ الحالة عند إغلاق الصفحة
+        $(window).on('beforeunload', function () {
+          saveState();
+        });
+
+        // إضافة تلميحات الأدوات لجميع العناصر التي تحتوي على data-title
+        $('[data-title]').each(function () {
+          const title = $(this).data('title');
+          $(this).attr('title', title);
+        });
+
+        function calculateAverageTime() {
+          var timeParts = $('#totalWorkTime').text().split(':');
+          var totalMinutes =
+            parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
+          var sessionsCount = parseInt($('#sessionsCount').text());
+          var averageMinutes =
+            sessionsCount !== 0 ? totalMinutes / sessionsCount : 0;
+          var hours = Math.floor(averageMinutes / 60)
+            .toString()
+            .padStart(2, '0');
+          var minutes = Math.round(averageMinutes % 60)
+            .toString()
+            .padStart(2, '0');
+          return `${hours}:${minutes}`;
+        }
+
+        $('#AvrdgeWorkTime').text(calculateAverageTime());
+
+        $('#refresh_tab').on('click', function () {
+          console.log('red');
+        });
+      });
+    </script>
+  </body>
+</html>
